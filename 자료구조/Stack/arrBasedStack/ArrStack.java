@@ -2,12 +2,8 @@ package arrBasedStack;
 
 import java.util.EmptyStackException;
 
-//import jdk.internal.misc.FileSystemOption;
-
 /** Array-based Stack
- *  "TOP" "물리적인" 위치로 지정
- * */
-
+ *  "TOP" "물리적인" 위치로 지정  **/
 public class ArrStack<T> implements Stack<T> {
 	
 	/*Field*/
