@@ -4,25 +4,14 @@ import java.util.EmptyStackException;
 
 
 /** Stack Abstract Data Type ; 사용자입장에서 Stack의 어떤 기능들이 있는가?
- * 
+ *  Stack의 요구사항은?
  * */
-public interface Stack<E> {
-
-	void push(E newElem);
-	E pop() throws EmptyStackException;
-	E top() throws EmptyStackException;
+public interface Stack<T> {
 	
-	int size();
+	void push(T newElem) throws StackFullException;
+	T pop() throws EmptyStackException;
+	T top() throws EmptyStackException;
 	boolean isEmpty();
-	
-	
-	
-	
-//	public int size();
-//	public boolean isEmpty();
-//	public T top() throws EmptyStackException;
-//	
-//	public void push(T newElem);
-//	public T pop() throws EmptyStackException;
-	
+	int size();
+	//boolean isFull(); Stack은 Array-based, LL-based로 구현가능. 어떻게 구현하느냐에따라 Full Stack이 없을 수 있으니 isFull()는 ADT에서 제외.
 }
