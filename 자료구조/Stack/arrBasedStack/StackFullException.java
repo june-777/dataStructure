@@ -1,11 +1,12 @@
 package arrBasedStack;
 
 @SuppressWarnings("serial")
-public class StackFullException extends RuntimeException{
+public class StackFullException extends Exception{
+	
 	public StackFullException() {
 		
 	}
-	public StackFullException(final String message) {
+	public StackFullException(String message) {
 		super(message);
 	}
 }
