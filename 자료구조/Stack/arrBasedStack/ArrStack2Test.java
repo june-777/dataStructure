@@ -13,109 +13,101 @@ import org.junit.jupiter.api.Test;
 /*TDD (Test-Driven Development)
  * Failing Test --> Make it Pass (failing Test 통과시키기 충분할 만큼의 production code생성) --> refactoring (코드 가다듬기) --> ... */ 
 
+
 class ArrStack2Test {
-
-	// SUT (System(class) Under Test)
-	private Stack<Integer> stack;//(private은 optional, Stack을 generic으로 선언했는데, 실제로 사용할 concrete한 타입을 선언하려면 타입 T를 구체화시켜줘야 함 Stack of T를 어떤 타입으로 쓸 것이냐 )
-	private Stack<String> stringStack; // Generics의 장점: 공통적인 definition 한번만 선언하면 재사용 가능
-
+	private Stack<Integer> stack; // Generic T에 대해 Integer로 정의.
+	
+	/*아직 구현안된 기능들에 대해 Failing Test*/	
 	@Test
-	void testPush() {
-		/*보통 테스트는 Given, When, Then 스타일로 수행해주는 것이 좋음
-		 * Given: Stack이 생성된 상황에서
-		 * When: push를 했을 때,
-		 * Then: 이 situation이 만족되는가?*/
+	void testPush() throws Exception {
 		//Given
-		stack = new ArrStack2<>(10); //**타입자체는 STack 타입이지만 실제 implement하고있는 타입은 ArrStakck2이니까 생성할 땐 Interface타입이 아닌 Concrete한 클래스 타입을 지정해줘야 함! **
-									// CAPACITY가 10인 배열 스택을 만들겠다.
+		stack = new ArrStack2<>(5);
 		//When
 		stack.push(7);
-		
-		//Then
-		assertEquals(7, stack.top() ); //어떤 일이 일어나야 정상? push(7)이 제대로 실행됐다고 볼 수 있는가? Stack의 top을 불렀을 떄, 7이 리턴돼야 정상.  assertEquals(기댓값, 실제실행된 값)
-		
-//		fail("Not yet implemented");
+		//Then (Assert)
+		assertEquals(7, stack.top());
 	}
-	
+	/*기본 push는 성공.. "Boundary Case"는 없는지 항상 고려
+	 * Boundary Case: Full Stack일 때, Push상황*/
 	@Test
-	void push_onFullStack_throwsException() {
-		//Arrange (Given)
+	void testPush_fullStack_throwException() throws Exception {
+		//Given
 		stack = new ArrStack2<>(2);
-		stack.push(1);
+		//When
 		stack.push(2);
-		
-		//Act (When) 
-		//Assert (Then) // fullstack일때 어떤 일이 벌어져야하는가?
-		assertThrows(IllegalStateException.class, () -> stack.push(3));
+		stack.push(3);
+		//Then(Assert)
+		assertThrows(StackFullException.class, () -> stack.push(1));
 	}
-
-	@Test // 훨씬 바람직한 방법
-	void push_onFullStack_throwsException_anotherWay(){
-		//Arrange (Given)
+	@Test
+	void testPush_fullStack_throwException_anotherway() throws Exception {
+		//Given
 		stack = new ArrStack2<>(2);
-		stack.push(1);
+		//When
 		stack.push(2);
-		
-		//Act (When) 
-		IllegalStateException exception = assertThrows(IllegalStateException.class, ()->stack.push(3)); //Import Error 주의 (자동 Import가 안되네..)
-
-		//Assert (Then)
+		stack.push(3);
+		StackFullException exception = assertThrows(StackFullException.class, () -> stack.push(1));
+		//Then(Assert)
 		assertEquals("Stack is Full", exception.getMessage());
 
 	}
 	
 	@Test
-	void popTest(){
-		// Given
-		stack = new ArrStack2<>(10);
-		stack.push(1);
-		stack.push(2);
-		
-		// When
-		int result = stack.pop();
-		
-		// Then(Assert)
-		assertEquals(2, result);
-	}
-	
-	@Test
-	void pop_emptyStack_throwsException() {
-		// Given
-		stack = new ArrStack2<>(10);
-
-		// When
-		// Then
-		assertThrows(EmptyStackException.class, ()->stack.pop());
-	}
-	
-	@Test
-	void top_emptyStack_throwsException() {
-		// Given
-		stack = new ArrStack2<>(10);
-
-		// When
-		// Then
-		assertThrows(EmptyStackException.class, ()->stack.top());
-	}
-	
-	@Test
-	void testSize() {
-		// Given
-		stack = new ArrStack2<>(10);
-		stack.push(777);
-		stack.push(88);
-		stack.push(9);
-		assertEquals(3, stack.size());
-	}
-	
-	@Test
-	void testEmpty() {
-		// Given
-		stack = new ArrStack2<>(5);
+	void testPop() throws Exception {
+		//Given
+		stack = new ArrStack2<>(3);
+		//When
 		stack.push(5);
-		stack.push(3);
-		stack.pop();
-		stack.pop();
-		assertEquals(true, stack.isEmpty());
+		//Then
+		assertEquals(5, stack.pop());
 	}
+	@Test /*Boundary Case: Empty Stack일 때, pop하는 상황*/
+	void testPop_emptyStack_throwException() throws Exception {
+		//Given
+		stack = new ArrStack2<>(3);
+		//When
+		stack.push(5);
+		stack.pop();
+		//Then
+		assertThrows(EmptyStackException.class, () -> stack.pop());
+	}
+	
+	@Test 
+	void testTop() throws Exception {
+		//Given
+		stack = new ArrStack2<>(3);
+		//When
+		stack.push(5);
+		stack.push(7);
+		stack.push(8);
+		//Then
+		assertEquals(8, stack.top());
+		assertEquals(3, stack.size()); ///top을 해도 size의 변화가 없는지까지 확인
+	}
+	@Test /*Boundar Case: Empty Stack일 때, top하는 상황*/
+	void testTop_emptyStack_throwException() throws Exception {
+		//Given
+		stack = new ArrStack2<>(5);
+		//When
+		stack.push(5);
+		stack.push(7);
+		stack.pop();
+		stack.pop();
+		//Then
+		assertThrows(EmptyStackException.class, () -> stack.top());
+	}
+	
+	@Test
+	void testSize() throws Exception{
+		//Given
+		stack = new ArrStack2<>(2);
+		//When
+		stack.push(3);
+		stack.push(2);
+		//Then
+		assertEquals(2, stack.size());
+	}
+	
+	
+	
 }
